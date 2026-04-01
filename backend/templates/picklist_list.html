@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Picklists | NexusWarehousing{% endblock %}
+{% block page_title %}Picklists{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search picklists...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Status</option>
+      <option value="pending" {% if status_filter == 'pending' %}selected{% endif %}>Pending</option>
+      <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>In Progress</option>
+      <option value="completed" {% if status_filter == 'completed' %}selected{% endif %}>Completed</option>
+      <option value="cancelled" {% if status_filter == 'cancelled' %}selected{% endif %}>Cancelled</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/picklists/create/" class="btn btn-primary">+ New PickList</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Pick Number</th><th>Order Ref</th><th>Zone Name</th><th>Items Count</th><th>Status</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/picklists/{{ r.pk }}/edit/"><strong>{{ r.pick_number }}</strong></a></td>
+        <td>{{ r.order_ref|default:"-" }}</td>
+        <td>{{ r.zone_name|default:"-" }}</td>
+        <td>{{ r.items_count|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_status_display }}</span></td>
+        <td class="actions">
+          <a href="/picklists/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/picklists/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No picklists found.</p>
+    <a href="/picklists/create/" class="btn btn-primary" style="margin-top:1rem">Create PickList</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
