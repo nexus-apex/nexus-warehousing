@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} Zone | NexusWarehousing{% endblock %}
+{% block page_title %}{% if editing %}Edit Zone{% else %}New Zone{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Warehouse</label>
+        <input type="text" name="warehouse" value="{{ record.warehouse|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Zone Type</label>
+        <select name="zone_type">
+          <option value="receiving" {% if record.zone_type == 'receiving' %}selected{% endif %}>Receiving</option>
+          <option value="storage" {% if record.zone_type == 'storage' %}selected{% endif %}>Storage</option>
+          <option value="picking" {% if record.zone_type == 'picking' %}selected{% endif %}>Picking</option>
+          <option value="packing" {% if record.zone_type == 'packing' %}selected{% endif %}>Packing</option>
+          <option value="shipping" {% if record.zone_type == 'shipping' %}selected{% endif %}>Shipping</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Capacity</label>
+        <input type="number" name="capacity" value="{{ record.capacity|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Utilization</label>
+        <input type="number" step="0.01" name="utilization" value="{{ record.utilization|default:'0' }}">
+      </div>
+      <div class="form-group">
+        <label>Temperature</label>
+        <select name="temperature">
+          <option value="ambient" {% if record.temperature == 'ambient' %}selected{% endif %}>Ambient</option>
+          <option value="cold" {% if record.temperature == 'cold' %}selected{% endif %}>Cold</option>
+          <option value="frozen" {% if record.temperature == 'frozen' %}selected{% endif %}>Frozen</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="checkbox-wrapper">
+        <input type="checkbox" name="active" id="id_active" {% if record.active %}checked{% endif %}>
+        <label for="id_active" style="margin-bottom:0">Active</label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} Zone</button>
+      <a href="/zones/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
