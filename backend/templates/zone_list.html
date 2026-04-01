@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block title %}Zones | NexusWarehousing{% endblock %}
+{% block page_title %}Zones{% endblock %}
+{% block content %}
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem">
+  <form class="search-bar" method="get" style="flex:1;margin-bottom:0">
+    <input type="text" name="search" value="{{ search }}" placeholder="Search zones...">
+    <select name="status" onchange="this.form.submit()">
+      <option value="">All Zone Type</option>
+      <option value="receiving" {% if status_filter == 'receiving' %}selected{% endif %}>Receiving</option>
+      <option value="storage" {% if status_filter == 'storage' %}selected{% endif %}>Storage</option>
+      <option value="picking" {% if status_filter == 'picking' %}selected{% endif %}>Picking</option>
+      <option value="packing" {% if status_filter == 'packing' %}selected{% endif %}>Packing</option>
+      <option value="shipping" {% if status_filter == 'shipping' %}selected{% endif %}>Shipping</option>
+    </select>
+    <button type="submit" class="btn btn-primary btn-sm">Search</button>
+  </form>
+  <a href="/zones/create/" class="btn btn-primary">+ New Zone</a>
+</div>
+
+<div class="card">
+  {% if records %}
+  <table>
+    <thead>
+      <tr><th>Name</th><th>Warehouse</th><th>Zone Type</th><th>Capacity</th><th>Utilization</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      {% for r in records %}
+      <tr>
+        <td><a href="/zones/{{ r.pk }}/edit/"><strong>{{ r.name }}</strong></a></td>
+        <td>{{ r.warehouse|default:"-" }}</td>
+        <td><span class="badge badge-blue">{{ r.get_zone_type_display }}</span></td>
+        <td>{{ r.capacity|default:"-" }}</td>
+        <td>{{ r.utilization|floatformat:2 }}</td>
+        <td class="actions">
+          <a href="/zones/{{ r.pk }}/edit/" class="btn btn-primary btn-sm">Edit</a>
+          <form method="post" action="/zones/{{ r.pk }}/delete/" style="display:inline" onsubmit="return confirm('Delete?')">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-sm">Del</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <div class="empty">
+    <p>No zones found.</p>
+    <a href="/zones/create/" class="btn btn-primary" style="margin-top:1rem">Create Zone</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
