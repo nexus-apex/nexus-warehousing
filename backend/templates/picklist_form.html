@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} PickList | NexusWarehousing{% endblock %}
+{% block page_title %}{% if editing %}Edit PickList{% else %}New PickList{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Pick Number</label>
+        <input type="text" name="pick_number" value="{{ record.pick_number|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Order Ref</label>
+        <input type="text" name="order_ref" value="{{ record.order_ref|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Zone Name</label>
+        <input type="text" name="zone_name" value="{{ record.zone_name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Items Count</label>
+        <input type="number" name="items_count" value="{{ record.items_count|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="pending" {% if record.status == 'pending' %}selected{% endif %}>Pending</option>
+          <option value="in_progress" {% if record.status == 'in_progress' %}selected{% endif %}>In Progress</option>
+          <option value="completed" {% if record.status == 'completed' %}selected{% endif %}>Completed</option>
+          <option value="cancelled" {% if record.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Assigned To</label>
+        <input type="text" name="assigned_to" value="{{ record.assigned_to|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Created Date</label>
+        <input type="date" name="created_date" value="{{ record.created_date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} PickList</button>
+      <a href="/picklists/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
