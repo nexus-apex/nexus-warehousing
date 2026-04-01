@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}{% if editing %}Edit{% else %}New{% endif %} InventoryItem | NexusWarehousing{% endblock %}
+{% block page_title %}{% if editing %}Edit InventoryItem{% else %}New InventoryItem{% endif %}{% endblock %}
+{% block content %}
+<div class="card" style="max-width:750px">
+  <form method="post">
+    {% csrf_token %}
+    <div class="form-row">
+      <div class="form-group">
+        <label>Name</label>
+        <input type="text" name="name" value="{{ record.name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Sku</label>
+        <input type="text" name="sku" value="{{ record.sku|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Zone Name</label>
+        <input type="text" name="zone_name" value="{{ record.zone_name|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Quantity</label>
+        <input type="number" name="quantity" value="{{ record.quantity|default:'0' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Lot Number</label>
+        <input type="text" name="lot_number" value="{{ record.lot_number|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Expiry Date</label>
+        <input type="date" name="expiry_date" value="{{ record.expiry_date|date:'Y-m-d'|default:'' }}">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Last Counted</label>
+        <input type="date" name="last_counted" value="{{ record.last_counted|date:'Y-m-d'|default:'' }}">
+      </div>
+      <div class="form-group">
+        <label>Status</label>
+        <select name="status">
+          <option value="available" {% if record.status == 'available' %}selected{% endif %}>Available</option>
+          <option value="reserved" {% if record.status == 'reserved' %}selected{% endif %}>Reserved</option>
+          <option value="damaged" {% if record.status == 'damaged' %}selected{% endif %}>Damaged</option>
+        </select>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:0.75rem;margin-top:1rem">
+      <button type="submit" class="btn btn-primary">{% if editing %}Update{% else %}Create{% endif %} InventoryItem</button>
+      <a href="/inventoryitems/" class="btn" style="background:var(--border);color:var(--text)">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
